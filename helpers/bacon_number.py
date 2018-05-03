@@ -54,7 +54,7 @@ def find_bacon(source, target):
                     if movie in target_movies]
     #while len(intersection) == 0:
         # check for actors to find link
-    movie = get_movie(intersection[0]['imdb_id'])
+    movie = get_movie_info(intersection[0]['id'])
     path = [{"title": movie['title'],
              "movie_poster": movie['poster'],
              "source_actor": source,
@@ -71,12 +71,19 @@ def get_movies(actor):
         Returns the movies the actor has been in
 
         Return format:
-        {
-            "type": "Film",
-            "imdb_id": "id",
-            "title": "movie title",
-            "poster": "link to movie poster"
-        }
+        [
+            "name": "actor name",
+            "id": "person_id",
+            "image": "link to image",
+            "filmography":
+            [{
+                "type": "Film",
+                "imdb_id": "id",
+                "title": "movie title",
+                "poster": "link to movie poster"
+            }
+            ...
+            ]
 
     """
     movies = storage.query_actor(actor_name=actor)
@@ -105,7 +112,7 @@ def get_movie_info(movie_id):
     if movie is None:
         url = "http://www.theimdbapi.org/api/movie?movie_id={}".format(movie_id)
         result = requests.get(url).json()
-        movie = parse_movie(movie)
+        movie = parse_movie(result)
         # TODO: add to database
     return movie
 
