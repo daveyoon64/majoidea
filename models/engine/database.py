@@ -44,16 +44,24 @@ class DBStorage:
             return None
 
     def query_actor(self, actor_id="", actor_name=""):
-        res = [o.stringJson for o in self.__session.query(Actor).filter(_or(
+        res = [o.stringJson for o in self.__session.query(Actor).filter(or_(
             Actor.actor_id == actor_id,
-            Actor.actor_name == actor_name))][0]
+            Actor.actor_name == actor_name))]
+        try:
+            res = res[0]
+        except:
+            return None
         if res:
             return json.loads(res)
         else:
             return None
     
     def query_movie(self, movie_id):
-        res = [o.stringJson for o in self.__session.query(Movie).filter(Movie.movie_id == movie_id)][0]
+        res = [o.stringJson for o in self.__session.query(Movie).filter(Movie.movie_id == movie_id)]
+        try:
+            res = res[0]
+        except:
+            return None
         if res:
             return json.loads(res)
         else:
