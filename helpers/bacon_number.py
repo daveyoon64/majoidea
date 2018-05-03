@@ -3,8 +3,8 @@
     Find the Bacon number between two actors    
 """
 import requests
-from query import fetch_actor, fetch_movie
-from api_parser import parse_actor, parse_movie
+from helpers import parse_actor, parse_movie
+from models import storage
 #from models.actors import Actor
 #from models.movies import Movie
 
@@ -54,9 +54,9 @@ def find_bacon(source, target):
                     if movie in target_movies]
     #while len(intersection) == 0:
         # check for actors to find link
-    movie = intersection[0]
+    movie = get_movie(intersection[0]['imdb_id'])
     path = [{"title": movie['title'],
-#             "movie_poster": movie['image'],
+             "movie_poster": movie['poster'],
              "source_actor": source,
              "source_actor_pic": source_dict['image'],
              "target_actor": target,
@@ -79,7 +79,7 @@ def get_movies(actor):
         }
 
     """
-    movies = fetch_actor(actor) 
+    movies = storage.query_actor(actor_name=actor)
     if movies is None:
         url = "http://www.theimdbapi.org/api/find/person?name={}".format(actor.replace(' ', '+'))
         result = requests.get(url).json()
@@ -87,6 +87,28 @@ def get_movies(actor):
     #    print(movies)
         # TODO: add result to database
     return movies
+
+
+def get_movie_info(movie_id):
+    """
+        Returns the movie information for given movie
+
+        Return format:
+        {
+            "cast" : [list of actors],
+            "title":  "name of movie",
+            "id": "movie_id",
+            "poster": "link to movie poster"
+        }
+    """
+    movie = storage.query_movie(movie_id)
+    if movie is None:
+        url = "http://www.theimdbapi.org/api/movie?movie_id={}".format(movie_id)
+        result = requests.get(url).json()
+        movie = parse_movie(movie)
+        # TODO: add to database
+    return movie
+
 
 
 if __name__ == "__main__":
