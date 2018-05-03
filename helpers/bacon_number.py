@@ -93,6 +93,7 @@ def get_movies(actor):
             ]
 
     """
+    actor = actor.lower()
     movies = storage.query_actor(actor_name=actor)
     if movies is None:
         url = "http://www.theimdbapi.org/api/find/person?name={}".format(actor.replace(' ', '+'))
