@@ -1,0 +1,42 @@
+.navbar-nav {
+  display: flex;
+}
+
+.search {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 80px;
+}
+
+.input-container {
+  margin-top: 20px;
+  padding: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.input {
+  height: 50px;
+  width: 40%;
+}
+
+.in-between {
+  padding: 10px;
+}
+
+.subscribe {
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+  width: 200px;
+  margin-top: 20px;
+}
+
+.divider {
+  height: 50px;
+}
