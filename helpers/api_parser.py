@@ -11,17 +11,21 @@ def parse_movie(json):
     }
 
 def parse_actor(json):
-    actor = json.loads(json)[0]
-    if "actor" in actor['filmography']
+#    actor = json[0].loads(json[0])
+    actor = json[0]
+    if "actor" in actor['filmography']:
         act = "actor"
     else:
         act= "actress"
+    films = [ o for o in actor['filmography'][act] if o['type'] == "Film"]
     return { 
         "name": actor['title'],
         "id": actor['person_id'],
-        "filmography": [{
-            "id": o['imbd_id'],
-            "title": o['title'],
-            "year": o['year']
-        } for o in actor['filmography'][act] if o['type'] == "Film"]
+        "image": actor['image']['poster'],
+        "filmography": films
+        # [{
+        #    "id": o['imbd_id'],
+        #    "title": o['title'],
+        #    "year": o['year']
+        #} for o in actor['filmography'][act] if o['type'] == "Film"]
     }
