@@ -64,8 +64,8 @@ def find_bacon(source, target):
     #if len(intersection) != 0:
         # FOUND MOVIE
     search = Search() 
-    setattr(search, "source_actor_name", source)
-    setattr(search, "target_actor_name", target)
+    setattr(search, "source_actor_name", source.lower())
+    setattr(search, "target_actor_name", target.lower())
     setattr(search, "stringJson", json.dumps(path))
     setattr(search, "time_stamp", datetime.utcnow())
     storage.new(search)
