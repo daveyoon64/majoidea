@@ -3,10 +3,10 @@
     Find the Bacon number between two actors    
 """
 import requests
+import json
+from datetime import datetime
 from helpers import parse_actor, parse_movie
-from models import storage
-#from models.actors import Actor
-#from models.movies import Movie
+from models import storage, Actor, Movie, Search
 
 
 def find_bacon(source, target):
@@ -63,6 +63,13 @@ def find_bacon(source, target):
              "target_actor_pic": target_dict['image']}]
     #if len(intersection) != 0:
         # FOUND MOVIE
+    search = Search() 
+    setattr(search, "source_actor_name", source)
+    setattr(search, "target_actor_name", target)
+    setattr(search, "stringJson", json.dumps(path))
+    setattr(search, "time_stamp", datetime.utcnow())
+    storage.new(search)
+    storage.save()
     return path
 
 
@@ -91,8 +98,13 @@ def get_movies(actor):
         url = "http://www.theimdbapi.org/api/find/person?name={}".format(actor.replace(' ', '+'))
         result = requests.get(url).json()
         movies = parse_actor(result)
-    #    print(movies)
-        # TODO: add result to database
+        new_actor = Actor()
+        setattr(new_actor, "actor_id", movies["id"])
+        setattr(new_actor, "actor_name", movies["name"])
+        setattr(new_actor, "stringJson", json.dumps(movies))
+        setattr(new_actor, "time_stamp", datetime.utcnow())
+        storage.new(new_actor)
+        storage.save()
     return movies
 
 
@@ -114,6 +126,12 @@ def get_movie_info(movie_id):
         result = requests.get(url).json()
         movie = parse_movie(result)
         # TODO: add to database
+        new_movie = Movie()
+        setattr(new_movie, "movie_id", movie["id"])
+        setattr(new_movie, "stringJson", json.dumps(movie))
+        setattr(new_movie, "time_stamp", datetime.utcnow())
+        storage.new(new_movie)
+        storage.save()
     return movie
 
 
