@@ -3,6 +3,10 @@
     Find the Bacon number between two actors    
 """
 import requests
+from query import fetch_actor, fetch_movie
+from api_parser import parse_actor, parse_movie
+#from models.actors import Actor
+#from models.movies import Movie
 
 
 def find_bacon(source, target):
@@ -42,18 +46,24 @@ def find_bacon(source, target):
             }
         ]
     """
-
-
-    source_movies = get_movies(source)
-    target_movies = get_movies(target)
+    source_dict = get_movies(source)
+    source_movies = source_dict['filmography']
+    target_dict = get_movies(target)
+    target_movies = target_dict['filmography']
     intersection = [movie for movie in source_movies
                     if movie in target_movies]
-    path = []
     #while len(intersection) == 0:
         # check for actors to find link
+    movie = intersection[0]
+    path = [{"title": movie['title'],
+#             "movie_poster": movie['image'],
+             "source_actor": source,
+             "source_actor_pic": source_dict['image'],
+             "target_actor": target,
+             "target_actor_pic": target_dict['image']}]
     #if len(intersection) != 0:
         # FOUND MOVIE
-    return intersection # no path found   
+    return path
 
 
 def get_movies(actor):
@@ -61,24 +71,21 @@ def get_movies(actor):
         Returns the movies the actor has been in
 
         Return format:
-        [
-            {
-                "url": "link",
-                "year": "year released",
-                "type": "Film",
-                "imdb_id": "id",
-                "title": "movie title"
-            }
-        ]
+        {
+            "type": "Film",
+            "imdb_id": "id",
+            "title": "movie title",
+            "poster": "link to movie poster"
+        }
 
     """
-    url = "http://www.theimdbapi.org/api/find/person?name={}".format(actor.replace(' ', '+'))
-    print(url)
-    r = requests.get(url).json()
-    if "actor" in r[0]["filmography"]:
-        movies = [movie for movie in r[0]["filmography"]["actor"] if movie["type"] == "Film"]
-    elif "actress" in r[0]["filmography"]:
-        movies = [movie for movie in r[0]["filmography"]["actress"] if movie["type"] == "Film"]
+    movies = fetch_actor(actor) 
+    if movies is None:
+        url = "http://www.theimdbapi.org/api/find/person?name={}".format(actor.replace(' ', '+'))
+        result = requests.get(url).json()
+        movies = parse_actor(result)
+    #    print(movies)
+        # TODO: add result to database
     return movies
 
 
