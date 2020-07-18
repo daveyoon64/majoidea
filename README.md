@@ -1,9 +1,6 @@
 # Six Degrees of Kevin Bacon: A Majoidea Joint
 A site devoted to finding how many jumps it takes from one actor to another.
 
-## Usage
-To use go to [majoidea](http://majoidea.holberton.us/) and type in both actors you would like to find a connection to.
-
 ## Stack
 Our technology stack used to make this website:<br>
 nginx<br>
